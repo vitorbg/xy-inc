@@ -1,14 +1,22 @@
 package model
 
 import (
+	"errors"
+	"fmt"
 	"github.com/vitorbg/xy-inc/domain"
 	"github.com/vitorbg/xy-inc/persistence/dao"
 	"log"
 	"math"
 )
 
-func SavePoi(nome string, x int, y int) error {
-	return dao.SavePoi(nome, x, y)
+func SavePoi(name string, x int, y int) error {
+	if x < 0 {
+		return errors.New(fmt.Sprintf("Erro ao gravar POI[%s,x=%d,y=%d]. Parametro x deve ser positivo. ", name, x, y))
+	}
+	if y < 0 {
+		return errors.New(fmt.Sprintf("Erro ao gravar POI[%s,x=%d,y=%d]. Parametro y deve ser positivo. ", name, x, y))
+	}
+	return dao.SavePoi(name, x, y)
 }
 
 func FindPoiAll() ([]domain.Poi, error) {

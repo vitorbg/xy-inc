@@ -1,49 +1,48 @@
 package main
 
 import (
-	"fmt"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"github.com/vitorbg/xy-inc/conf"
 	"github.com/vitorbg/xy-inc/model"
+	"github.com/vitorbg/xy-inc/resources"
 	"github.com/vitorbg/xy-inc/util"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 )
 
 func main() {
-	//os.Remove(conf.GetUrlDatabase())
 
 	err := conf.LoadConf("xy-inc.json")
 	if err != nil {
 		panic(err)
 	}
 
-	if _, err := os.Stat(conf.GetUrlDatabase()); os.IsNotExist(err) { //Verifica se a pasta log existe
+	if _, err := os.Stat(conf.GetUrlDatabase()); os.IsNotExist(err) {
 		log.Println(conf.GetUrlDatabase())
 		model.InitDatabase()
 	}
 
-	if _, err := os.Stat("log"); os.IsNotExist(err) { //Verifica se a pasta log existe
+	if _, err := os.Stat("log"); os.IsNotExist(err) {
 		os.Mkdir("log", 0777)
 	}
 
 	lf := util.NewLogFile("log" + string(filepath.Separator) + "xy-inc.log")
 	log.SetOutput(io.MultiWriter(lf, os.Stdout))
-	//log.SetFlags(log.Llongfile + log.Ltime + log.Ldate)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	util.RotatesLog(lf)
 
-	log.Println("é nois que voa")
-	listaPoi, err := model.FindPoiAll()
-	if err != err {
-		log.Println(err)
-	}
-	for _, poi := range listaPoi {
-		log.Println(fmt.Sprintf("POI %s - X=%d,Y=%d", poi.Nome, poi.X, poi.Y))
-	}
+	e := echo.New()
+	e.Logger.SetOutput(io.MultiWriter(lf, os.Stdout))
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{Output: lf}))
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{Output: os.Stdout}))
 
-	//	model.FindPoiByCoordinateAndDistance(10, 20, 10)
+	e.GET("/poi", resources.FindPoiAll)
+	e.POST("/poi", resources.SavePoi)
+	e.GET("/poi/proximidade", resources.FindPoiByCoordinateAndDistance)
 
-	//	model.SavePoi("Camelodromo", 50, 58)
+	e.Logger.Fatal(e.Start(":" + strconv.Itoa(conf.GetAppPort())))
 }
