@@ -4,17 +4,17 @@
 
 Framework para HTTP
 
-go get github.com/labstack/echo
+- go get github.com/labstack/echo
 
-go get github.com/dgrijalva/jwt-go
+- go get github.com/dgrijalva/jwt-go
 
 Driver do Banco de Dados Sqlite3 (Precisa do gcc instalado, <https://github.com/mattn/go-sqlite3>)
 
-go get github.com/mattn/go-sqlite3
+- go get github.com/mattn/go-sqlite3
 
 ## Realizar o download do código fonte do xy-inc
 
-go get github.com/vitorbg/xy-inc
+- go get github.com/vitorbg/xy-inc
 
 ## Execução do código
 
@@ -23,6 +23,12 @@ Na pasta $GOPATH/src/github.com/vitorbg/xy-inc digitar o seguinte comando:
 go run main.go
 
 O nome da base de dados e a porta do servidor são configuráveis pelo arquivo de configurações "xy-inc.json". Por padrão a porta é 1323 e o nome da base de dados "xy-inc.db". Na primeira execução a base sqlite3 será criada, juntamente com o script de criação da tabela POI.
+
+## Execução dos testes
+
+Na pasta $GOPATH/src/github.com/vitorbg/xy-inc digitar o seguinte comando:
+
+go test ./...
 
 ## Rotas
 

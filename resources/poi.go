@@ -23,7 +23,7 @@ func SavePoi(c echo.Context) error {
 	y, err := strconv.Atoi(coordinate_y)
 	if err != nil {
 		log.Println(err)
-		return c.JSON(http.StatusInternalServerError, "Erro no parametro y. Deve ser um numero natural.")
+		return c.JSON(http.StatusBadRequest, "Erro no parametro y. Deve ser um numero natural.")
 	}
 
 	err = model.SavePoi(name, x, y)
@@ -38,13 +38,13 @@ func SavePoi(c echo.Context) error {
 
 func FindPoiAll(c echo.Context) error {
 
-	listaPoi, err := model.FindPoiAll()
-	if err != err {
+	listPoi, err := model.FindPoiAll()
+	if err != nil {
 		log.Println(err)
 		return c.JSON(http.StatusInternalServerError, "Erro ao buscar todos os POIs cadastrados.")
 	}
 
-	return c.JSON(http.StatusOK, listaPoi)
+	return c.JSON(http.StatusOK, listPoi)
 }
 
 func FindPoiByCoordinateAndDistance(c echo.Context) error {
@@ -70,11 +70,11 @@ func FindPoiByCoordinateAndDistance(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Erro no parametro dmax.")
 	}
 
-	listaPoi, err := model.FindPoiByCoordinateAndDistance(x, y, d)
-	if err != err {
+	listPoi, err := model.FindPoiByCoordinateAndDistance(x, y, d)
+	if err != nil {
 		log.Println(err)
-		return c.JSON(http.StatusInternalServerError, "Erro ao buscar POIs por proximidade.")
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, listaPoi)
+	return c.JSON(http.StatusOK, listPoi)
 }

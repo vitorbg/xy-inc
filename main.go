@@ -31,8 +31,9 @@ func main() {
 	}
 
 	lf := util.NewLogFile("log" + string(filepath.Separator) + "xy-inc.log")
+	log.SetFlags(log.Llongfile + log.Ltime + log.Ldate)
 	log.SetOutput(io.MultiWriter(lf, os.Stdout))
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	util.RotatesLog(lf)
 
 	e := echo.New()

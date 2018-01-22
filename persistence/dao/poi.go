@@ -27,7 +27,7 @@ func SavePoi(nome string, x int, y int) error {
 	if err2 != nil {
 		log.Println(err2)
 		tx.Rollback()
-		return err
+		return err2
 	}
 	err = tx.Commit()
 	if err != nil {
